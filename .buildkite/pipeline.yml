@@ -9,11 +9,21 @@ steps:
 
   - wait
 
-  - trigger: "${BUILDKITE_PIPELINE_SLUG}-deploy"
-    label: ":shipit:"
-    branches: "master"
-    async: true
-    build:
-      message: "${BUILDKITE_MESSAGE}"
-      commit: "${BUILDKITE_COMMIT}"
-      branch: "${BUILDKITE_BRANCH}"
+#   - trigger: "${BUILDKITE_PIPELINE_SLUG}-deploy"
+#     label: ":shipit:"
+#     branches: "master"
+#     async: true
+#     build:
+#       message: "${BUILDKITE_MESSAGE}"
+#       commit: "${BUILDKITE_COMMIT}"
+#       branch: "${BUILDKITE_BRANCH}"
+
+  - name: ":lambda: Deploy"
+    command: ".buildkite/steps/deploy.bash"
+    agents:
+      queue: ${BUILDKITE_AGENT_META_DATA_QUEUE}
+    plugins:
+      docker-compose:
+        run: node
+    concurrency: 1
+    concurrency_group: lambda-deploy
